@@ -38,8 +38,5 @@ namespace Basket.API.Repositories
             await _redisCache.RemoveAsync(userName);
         }
 
-        
-
-       
     }
 }
