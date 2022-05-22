@@ -1,4 +1,6 @@
+using Basket.API.GrpcServices;
 using Basket.API.Repositories;
+using Discount.Grpc.Protos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +28,13 @@ namespace Basket.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(option =>
+            {
+                option.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]);
+            });
+
+            services.AddScoped<DiscountGrpcService>();
+
             services.AddStackExchangeRedisCache(option =>
             {
                 option.Configuration = Configuration.GetValue<string>("CacheSettings:ConnectionString");
