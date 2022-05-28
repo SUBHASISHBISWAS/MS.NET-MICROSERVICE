@@ -11,5 +11,13 @@ namespace Odering.API
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
         public string Summary { get; set; }
+
+        public string MySummary { get; set; }
+
+        private int MyNumber { get; set; }
+
+        private string MyName { get; set; }
+
+        public int DaughterName { get; set; }
     }
 }
