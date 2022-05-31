@@ -98,7 +98,9 @@ services:
     ports:
       - "8003:80"
 
-  odering.api:
+
+
+  ordering.api:
     container_name: ordering.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development

@@ -5,18 +5,16 @@ using Ordering.Application.Features.Orders.Command.CheckoutOrder;
 using Ordering.Application.Features.Orders.Command.DeleteOrder;
 using Ordering.Application.Features.Orders.Command.UpdateOrder;
 using Ordering.Application.Features.Orders.Queries.GetOrdersList;
-using Ordering.Domain.Entities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Odering.API.Controllers
+namespace Ordering.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[Controller]")]
-    public class OrderController :ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -25,8 +23,8 @@ namespace Odering.API.Controllers
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        [HttpGet("{userName}",Name ="GetOrder")]
-        [ProducesResponseType(typeof(IEnumerable<OrdersVm>),(int)HttpStatusCode.OK)]
+        [HttpGet("{userName}", Name = "GetOrder")]
+        [ProducesResponseType(typeof(IEnumerable<OrdersVm>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<IEnumerable<OrdersVm>>> GetOrdersByUserName(string userName)
         {
             var query = new GetOrdersListQuery(userName);
@@ -36,7 +34,7 @@ namespace Odering.API.Controllers
 
         [HttpPost(Name = "CheckoutOrder")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<ActionResult<int>> CheckoutOrder([FromBody]CheckoutOrderCommand command)
+        public async Task<ActionResult<int>> CheckoutOrder([FromBody] CheckoutOrderCommand command)
         {
             var result = await _mediator.Send(command);
             return Ok(result);
