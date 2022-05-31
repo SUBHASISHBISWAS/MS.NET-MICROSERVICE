@@ -30,11 +30,11 @@ services:
   orderdb:
     container_name: orderdb
     environment:
-        SA_PASSWORD: "SqlServer@2019"
-        ACCEPT_EULA: "Y"
+        SA_PASSWORD: 'SqlServer@2019'
+        ACCEPT_EULA: 'Y'
     restart: always
     ports:
-        - "1433:1433"
+        - '1433:1433'
 
   pgadmin:
     container_name: pgadmin
