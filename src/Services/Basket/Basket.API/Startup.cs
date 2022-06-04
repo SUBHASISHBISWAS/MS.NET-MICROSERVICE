@@ -1,6 +1,7 @@
 using Basket.API.GrpcServices;
 using Basket.API.Repositories;
 using Discount.Grpc.Protos;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,31 @@ namespace Basket.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMassTransit(config =>
+            {
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host(Configuration["EventBusSettings:HostAddress"]);
+                });
+            });
+
+            // OPTIONAL, but can be used to configure the bus options
+            services.AddOptions<MassTransitHostOptions>()
+                .Configure(options =>
+                {
+                    // if specified, waits until the bus is started before
+                    // returning from IHostedService.StartAsync
+                    // default is false
+                    options.WaitUntilStarted = true;
+
+                    // if specified, limits the wait time when starting the bus
+                    options.StartTimeout = TimeSpan.FromSeconds(10);
+
+                    // if specified, limits the wait time when stopping the bus
+                    options.StopTimeout = TimeSpan.FromSeconds(30);
+                });
+        
+
             services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(option =>
             {
                 option.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]);
