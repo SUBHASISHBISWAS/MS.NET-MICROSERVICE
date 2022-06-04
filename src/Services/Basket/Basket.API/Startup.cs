@@ -29,6 +29,9 @@ namespace Basket.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddMassTransit(config =>
             {
                 config.UsingRabbitMq((ctx, cfg) =>
@@ -52,7 +55,8 @@ namespace Basket.API
                     // if specified, limits the wait time when stopping the bus
                     options.StopTimeout = TimeSpan.FromSeconds(30);
                 });
-        
+
+            
 
             services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(option =>
             {
@@ -65,6 +69,8 @@ namespace Basket.API
             {
                 option.Configuration = Configuration.GetValue<string>("CacheSettings:ConnectionString");
             });
+
+            
 
             services.AddScoped<IBasketRepository,BasketRepository>();
             services.AddControllers();
