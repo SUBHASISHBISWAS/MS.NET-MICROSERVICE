@@ -18,6 +18,10 @@ namespace OcelotApiGw
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostingContex, config) =>
+            {
+                config.AddJsonFile($"ocelot.{hostingContex.HostingEnvironment.EnvironmentName}.json",true,true);
+            })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
