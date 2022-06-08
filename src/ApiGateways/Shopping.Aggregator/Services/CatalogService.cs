@@ -1,4 +1,5 @@
-﻿using Shopping.Aggregator.Models;
+﻿using Shopping.Aggregator.Extensions;
+using Shopping.Aggregator.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -13,19 +14,22 @@ namespace Shopping.Aggregator.Services
         {
             _client=client?? throw new ArgumentNullException(nameof(client));
         }
-        public Task<IEnumerable<CatalogModel>> GetCatalog()
+        public async Task<IEnumerable<CatalogModel>> GetCatalog()
         {
-            throw new System.NotImplementedException();
+            var response =await _client.GetAsync("/api/v1/Catalog");
+            return await response.ReadContentAs<List<CatalogModel>>();
         }
 
-        public Task<CatalogModel> GetCatelog(string id)
+        public async Task<CatalogModel> GetCatelog(string id)
         {
-            throw new System.NotImplementedException();
+            var response = await _client.GetAsync($"/api/v1/Catalog/{id}");
+            return await response.ReadContentAs<CatalogModel>();
         }
 
-        public Task<IEnumerable<CatalogModel>> GetCatelogByCategory(string categoty)
+        public async Task<IEnumerable<CatalogModel>> GetCatelogByCategory(string category)
         {
-            throw new System.NotImplementedException();
+            var response = await _client.GetAsync($"/api/v1/Catalog/GetProductByCategory/{category}");
+            return await response.ReadContentAs<List<CatalogModel>>();
         }
     }
 }
