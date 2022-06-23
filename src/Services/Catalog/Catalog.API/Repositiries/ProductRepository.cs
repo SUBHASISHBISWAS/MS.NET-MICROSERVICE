@@ -58,14 +58,6 @@ namespace Catalog.API.Repositiries
             return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
         }
 
-       
-
-       
-
-        
-
-        
-
         
     }
 }
