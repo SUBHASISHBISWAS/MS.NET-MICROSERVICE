@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.29" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CQRS.CORE\CQRS.CORE.csproj" />
     <ProjectReference Include="..\POST.QUERY.DOMAIN\POST.QUERY.DOMAIN.csproj" />
   </ItemGroup>
