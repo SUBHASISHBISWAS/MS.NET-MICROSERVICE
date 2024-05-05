@@ -1,3 +1,0 @@
-#7. Create Docker Network - techbankNet 
-
-docker network create --attachable -d bridge mydockernetwork
