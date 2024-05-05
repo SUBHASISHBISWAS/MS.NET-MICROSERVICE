@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CQRS.CORE\CQRS.CORE.csproj" />
+    <ProjectReference Include="..\POST.CMD.DOMAIN\POST.CMD.DOMAIN.csproj" />
+  </ItemGroup>
+
 </Project>
