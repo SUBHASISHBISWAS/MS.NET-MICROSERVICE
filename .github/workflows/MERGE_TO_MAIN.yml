@@ -32,6 +32,6 @@ jobs:
             echo "Merge conflict detected!"
             exit 1
           fi
-          git push -f origin main
+          git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the provided GITHUB_TOKEN
