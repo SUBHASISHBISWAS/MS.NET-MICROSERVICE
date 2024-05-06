@@ -22,8 +22,16 @@ jobs:
       - name: Merge branch to main
         run: |
           git fetch origin main
+          # Attempt to merge and check for conflicts
+          set +e # Disable error stopping
           git checkout main
           git merge --no-ff --allow-unrelated-histories "${{ github.ref }}" # Corrected to use github.ref and allow unrelated histories
+          MERGE_EXIT_CODE=$?
+          set -e # Re-enable error stopping
+          if [ $MERGE_EXIT_CODE -ne 0 ]; then
+            echo "Merge conflict detected!"
+            exit 1
+          fi
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the provided GITHUB_TOKEN
