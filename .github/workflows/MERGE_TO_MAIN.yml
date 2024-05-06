@@ -34,4 +34,4 @@ jobs:
           fi
           git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the provided GITHUB_TOKE
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the provided GITHUB_TOKEN
