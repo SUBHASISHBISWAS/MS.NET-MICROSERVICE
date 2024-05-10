@@ -2,7 +2,7 @@
 
 namespace POST.CMD.API.COMMANDS
 {
-    public class LikePostCommand:BaseCommand
+    public class LikePostCommand : BaseCommand
     {
 
     }
