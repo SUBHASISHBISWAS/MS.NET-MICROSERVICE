@@ -2,7 +2,7 @@
 
 namespace POST.CMD.API.COMMANDS
 {
-    public class EditCommentCommand:BaseCommand
+    public class EditCommentCommand : BaseCommand
     {
         public Guid CommentId { get; set; }
         public string Comment { get; set; }

@@ -2,7 +2,7 @@
 
 namespace POST.CMD.API.COMMANDS
 {
-    public class RemoveCommentCommand:BaseCommand
+    public class RemoveCommentCommand : BaseCommand
     {
         public Guid CommentId { get; set; }
 
