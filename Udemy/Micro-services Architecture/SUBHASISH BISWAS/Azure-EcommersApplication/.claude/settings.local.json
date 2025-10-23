@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/subhasishbiswas/GIT/Interstellar/MS.NET-MICROSERVICE/Udemy/**)",
+      "Bash(tree:*)",
+      "Bash(dotnet sln:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

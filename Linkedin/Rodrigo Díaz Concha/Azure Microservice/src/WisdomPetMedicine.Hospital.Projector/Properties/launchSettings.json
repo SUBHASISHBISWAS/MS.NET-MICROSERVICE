@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "WisdomPetMedicine.Hospital.Projector": {
+      "commandName": "Project"
+    }
+  }
+}
