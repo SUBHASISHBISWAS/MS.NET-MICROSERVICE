@@ -1,5 +1,5 @@
 ﻿namespace BuildingBlocks.Messaging.Events;
-public record BasketCheckoutEvent : IntegrationEvent
+public record  BasketCheckoutEvent : IntegrationEvent
 {
     public string UserName { get; set; } = default!;
     public Guid CustomerId { get; set; } = default!;

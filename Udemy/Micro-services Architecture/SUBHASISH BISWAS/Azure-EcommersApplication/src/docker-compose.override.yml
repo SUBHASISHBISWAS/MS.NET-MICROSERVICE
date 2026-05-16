@@ -94,8 +94,13 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=orderdb;Database=OrderDb;User Id=sa;Password=SwN12345678;Encrypt=False;TrustServerCertificate=True
+      - CosmosDb__Endpoint=https://<your-cosmosdb-account>.documents.azure.com:443/
+      - CosmosDb__Key=<your-cosmosdb-key>
+      - CosmosDb__DatabaseName=OrderEventStore
+      - CosmosDb__ContainerName=OrderEvents
       - MessageBroker__ConnectionString=Endpoint=sb://<your-servicebus-namespace>.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=<your-key>
       - FeatureManagement__OrderFullfilment=false
+      - FeatureManagement__EventSourcing=true
     depends_on:
       - orderdb
     ports:

@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddApplicationServices(builder.Configuration)
     .AddInfrastructureServices(builder.Configuration)
+    .AddEventSourcingServices(builder.Configuration) // Add CosmosDB Event Sourcing
     .AddApiServices(builder.Configuration);
 
 var app = builder.Build();

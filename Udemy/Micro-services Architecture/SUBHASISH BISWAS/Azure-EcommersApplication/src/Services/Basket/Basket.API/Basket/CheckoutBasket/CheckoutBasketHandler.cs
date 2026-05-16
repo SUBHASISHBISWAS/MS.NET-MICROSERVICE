@@ -15,7 +15,7 @@ public class CheckoutBasketCommandValidator
     {
         RuleFor(x => x.BasketCheckoutDto).NotNull().WithMessage("BasketCheckoutDto can't be null");
         RuleFor(x => x.BasketCheckoutDto.UserName).NotEmpty().WithMessage("UserName is required");
-    }
+    } 
 }
 
 public class CheckoutBasketCommandHandler

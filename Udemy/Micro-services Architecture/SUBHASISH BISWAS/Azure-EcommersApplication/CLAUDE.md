@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a production-ready .NET 8 microservices e-commerce application demonstrating modern architectural patterns including DDD, CQRS, Event-Driven Architecture, and Clean Architecture. The system comprises independent services for Catalog, Basket, Discount, and Ordering, communicating via both synchronous (gRPC) and asynchronous (Azure Service Bus) protocols.
+This is a production-ready .NET 8 microservices e-commerce application demonstrating modern architectural patterns including DDD, CQRS, Event Sourcing, Event-Driven Architecture, and Clean Architecture. The system comprises independent services for Catalog, Basket, Discount, and Ordering, communicating via both synchronous (gRPC) and asynchronous (Azure Service Bus) protocols.
 
 ## Architecture Patterns
 
@@ -12,13 +12,14 @@ This is a production-ready .NET 8 microservices e-commerce application demonstra
 - **Catalog** - Product catalog management using Vertical Slice Architecture with Marten (PostgreSQL document DB)
 - **Basket** - Shopping cart with Repository + Decorator pattern, Redis caching, gRPC client to Discount service
 - **Discount** - gRPC server using EF Core with SQLite
-- **Ordering** - Full DDD implementation with Clean Architecture (Domain/Application/Infrastructure/API layers), consumes Azure Service Bus events
+- **Ordering** - Full DDD implementation with Clean Architecture (Domain/Application/Infrastructure/API layers), Event Sourcing with CosmosDB, consumes Azure Service Bus events
 - **YarpApiGateway** - Reverse proxy with rate limiting (5 req/10 sec on ordering)
 - **Shopping.Web** - ASP.NET Razor Pages UI calling APIs via Refit
 
 ### Key Patterns
 - **CQRS**: Commands (ICommand) and Queries (IQuery) with MediatR mediation in Catalog, Basket, Ordering
 - **DDD**: Ordering service uses Aggregate Root (Order), Value Objects (OrderId, Address, Payment), Domain Events (OrderCreatedEvent)
+- **Event Sourcing**: Ordering service stores all state changes as events in CosmosDB, rebuilds state by replaying events
 - **Event-Driven**: Basket publishes BasketCheckoutEvent → Azure Service Bus → Ordering consumes via MassTransit
 - **Vertical Slices**: Catalog organizes by feature (CreateProduct/, UpdateProduct/) with all layers in single folder
 - **Clean Architecture**: Ordering separates Domain → Application → Infrastructure → API
@@ -36,6 +37,7 @@ This is a production-ready .NET 8 microservices e-commerce application demonstra
 - Docker Desktop (must be running)
 - Docker memory: 4GB minimum, CPU: 2 cores
 - Azure Service Bus namespace (see Azure Service Bus Setup below)
+- Azure CosmosDB account (see CosmosDB Event Sourcing Setup below)
 
 ### Azure Service Bus Setup
 
@@ -52,6 +54,48 @@ Connection string format:
 ```
 Endpoint=sb://<your-namespace>.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=<your-key>
 ```
+
+### CosmosDB Event Sourcing Setup
+
+The Ordering service uses Event Sourcing with CosmosDB to store all state changes as events:
+
+1. **Create CosmosDB Account** in Azure Portal:
+   - Choose "Azure Cosmos DB for NoSQL"
+   - Select appropriate region
+   - Recommended: Use Serverless capacity mode for development (cheaper)
+
+2. **Get Connection Details**:
+   - Navigate to your CosmosDB account
+   - Go to "Keys" section
+   - Copy the "URI" (endpoint) and "PRIMARY KEY"
+
+3. **Update Configuration**:
+   Update these files with your CosmosDB details:
+   - `src/Services/Ordering/Ordering.API/appsettings.json`
+   - `src/docker-compose.override.yml`
+
+   Configuration format:
+   ```json
+   "CosmosDb": {
+     "Endpoint": "https://<your-account>.documents.azure.com:443/",
+     "Key": "<your-primary-key>",
+     "DatabaseName": "OrderEventStore",
+     "ContainerName": "OrderEvents"
+   }
+   ```
+
+4. **Database Initialization**:
+   The application automatically creates the database and container on first run:
+   - Database: `OrderEventStore`
+   - Container: `OrderEvents` (partitioned by AggregateId)
+   - Throughput: 400 RU/s (shared)
+
+**Event Sourcing Features**:
+- All order state changes stored as immutable events
+- Complete audit trail of all operations
+- Time travel: Rebuild aggregate state at any point in time
+- Optimistic concurrency with version numbers
+- Event replay for debugging and analysis
 
 ### Building
 
@@ -141,7 +185,7 @@ dotnet ef database update -p ../Ordering.Infrastructure/Ordering.Infrastructure.
 - **src/WebApps/** - Shopping.Web UI
 
 ### BuildingBlocks (Shared Libraries)
-- **BuildingBlocks.csproj**: CQRS interfaces (ICommand/IQuery/ICommandHandler/IQueryHandler), ValidationBehavior, LoggingBehavior, CustomExceptionHandler, Pagination
+- **BuildingBlocks.csproj**: CQRS interfaces (ICommand/IQuery/ICommandHandler/IQueryHandler), ValidationBehavior, LoggingBehavior, CustomExceptionHandler, Pagination, Event Sourcing abstractions (IEventStore, IEventSourcedAggregate, EventSourcedAggregate)
 - **BuildingBlocks.Messaging.csproj**: IntegrationEvent base class, BasketCheckoutEvent, MassTransit/Azure Service Bus configuration extensions
 
 ### Vertical Slice Architecture (Catalog)
@@ -154,13 +198,20 @@ Products/
 │   └── CreateProductEndpoint.cs (ICarterModule)
 ```
 
-### DDD Layers (Ordering)
+### DDD Layers (Ordering with Event Sourcing)
 ```
-Ordering.Domain/         # Aggregates, Entities, Value Objects, Domain Events
-Ordering.Application/    # Commands, Queries, Handlers, DTOs
-Ordering.Infrastructure/ # EF Core, Repositories, Interceptors
+Ordering.Domain/         # Aggregates (Order, OrderES), Entities, Value Objects, Domain Events
+Ordering.Application/    # Commands, Queries, Handlers (both EF Core and Event Sourced), DTOs
+Ordering.Infrastructure/ # EF Core, CosmosDB Event Store, Repositories, Interceptors
 Ordering.API/           # Endpoints (Carter modules)
 ```
+
+**Dual Implementation**:
+- **Order** - Traditional aggregate using EF Core (for backward compatibility)
+- **OrderES** - Event-sourced aggregate using CosmosDB
+- **CreateOrderHandler** - EF Core implementation
+- **CreateOrderHandlerES** - Event Sourcing implementation
+- Similar pattern for UpdateOrderHandler/UpdateOrderHandlerES
 
 ## Important Implementation Details
 
@@ -179,6 +230,65 @@ Ordering.API/           # Endpoints (Carter modules)
 - Basket publishes BasketCheckoutEvent to Azure Service Bus via MassTransit
 - Ordering's BasketCheckoutEventHandler consumes event, converts to CreateOrderCommand
 - Ensures loose coupling between services
+
+### Event Sourcing (Ordering Service)
+
+**Architecture**:
+The Ordering service implements Event Sourcing, storing all state changes as immutable events in CosmosDB rather than storing current state.
+
+**Components**:
+1. **EventSourcedAggregate** (BuildingBlocks): Base class for event-sourced aggregates
+   - Tracks uncommitted events
+   - Applies events to rebuild state
+   - Version tracking for optimistic concurrency
+
+2. **IEventStore** (BuildingBlocks): Interface for event persistence
+   - `SaveEventsAsync()` - Persists events with version checking
+   - `GetEventsAsync()` - Retrieves event stream for an aggregate
+   - `GetVersionAsync()` - Gets current aggregate version
+
+3. **CosmosDbEventStore** (Infrastructure): CosmosDB implementation
+   - Stores events as EventStoreEvent documents
+   - Partitioned by AggregateId for efficient queries
+   - Serializes events with full type information (TypeNameHandling)
+
+4. **OrderES** (Domain): Event-sourced Order aggregate
+   - Inherits from EventSourcedAggregate
+   - Raises granular events: OrderCreatedEventES, OrderUpdatedEventES, OrderItemAddedEvent, OrderItemRemovedEvent
+   - Apply() methods rebuild state from events
+
+**Event Flow**:
+1. Command → Handler loads aggregate from event store
+2. Aggregate business method called → Raises new event → Event applied to state
+3. Event added to uncommitted events list
+4. Handler saves aggregate → Event store persists all uncommitted events
+5. Events committed and cleared from aggregate
+
+**Key Events**:
+- **OrderCreatedEventES**: Order creation with all initial data
+- **OrderUpdatedEventES**: Order modification
+- **OrderItemAddedEvent**: Item added to order
+- **OrderItemRemovedEvent**: Item removed from order
+
+**Benefits**:
+- Complete audit trail of all state changes
+- Time travel: Replay events to any point in history
+- Event replay for debugging and analysis
+- Temporal queries (state at any point in time)
+- Natural integration with event-driven architecture
+- Optimistic concurrency with version numbers
+
+**Optimistic Concurrency**:
+- Each event has a version number
+- SaveEventsAsync() checks expected version matches current version
+- Prevents lost updates in concurrent scenarios
+- Throws exception on version mismatch
+
+**CosmosDB Structure**:
+- Database: OrderEventStore
+- Container: OrderEvents
+- Partition Key: AggregateId (Guid as string)
+- Documents: EventStoreEvent with metadata (EventType, EventData, Version, Timestamp)
 
 ### gRPC Communication
 - Discount.Grpc exposes DiscountProtoService (defined in discount.proto)
