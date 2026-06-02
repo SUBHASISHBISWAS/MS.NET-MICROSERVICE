@@ -1,8 +1,5 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddProject<Projects.Catalog>("catalog");
-//backing services
-
 // Backing Services
 var postgres = builder
     .AddPostgres("postgres")

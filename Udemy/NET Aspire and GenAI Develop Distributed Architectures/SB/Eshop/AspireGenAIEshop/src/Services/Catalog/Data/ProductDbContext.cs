@@ -1,13 +1,7 @@
-﻿using Catalog.Models;
-using Microsoft.EntityFrameworkCore;
+﻿namespace Catalog.Data;
 
-namespace Catalog.Data;
-
-public class ProductDbContext : DbContext
+public class ProductDbContext(DbContextOptions<ProductDbContext> options) : DbContext(options)
 {
-    public ProductDbContext(DbContextOptions<ProductDbContext> options)
-        : base(options) { }
-
     public DbSet<Product> Products => Set<Product>();
 }
 
