@@ -8,4 +8,8 @@
         <UserSecretsId>8f66edc8-62db-4c0e-873c-eafc9350c746</UserSecretsId>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Catalog\Catalog.csproj" />
+    </ItemGroup>
+
 </Project>
