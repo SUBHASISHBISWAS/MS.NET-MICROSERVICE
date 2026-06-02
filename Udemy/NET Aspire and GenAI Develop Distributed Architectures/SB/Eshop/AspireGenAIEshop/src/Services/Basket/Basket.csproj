@@ -17,8 +17,13 @@
 
     <ItemGroup>
       <Folder Include="Endpoints\" />
-      <Folder Include="Models\" />
       <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\Catalog\Models\Product.cs">
+        <Link>Models\Product.cs</Link>
+      </Compile>
     </ItemGroup>
 
 </Project>

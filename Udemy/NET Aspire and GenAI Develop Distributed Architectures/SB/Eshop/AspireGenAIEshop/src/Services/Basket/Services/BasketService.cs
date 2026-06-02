@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Basket.Services;
 
-public class BasketService(IDistributedCache cache)
+public class BasketService(IDistributedCache cache,CatalogApiClient catalogApiClient)
 {
     public async Task<ShoppingCart?> GetBasket(string userName)
     {
@@ -18,9 +18,9 @@ public class BasketService(IDistributedCache cache)
         // Get latest product information and set Price and ProductName when adding item into SC
         foreach (var item in basket.Items)
         {
-            //var product = await catalogApiClient.GetProductById(item.ProductId);
-            //item.Price = product.Price;
-            //item.ProductName = product.Name;
+            var product = await catalogApiClient.GetProductById(item.ProductId);
+            item.Price = product.Price;
+            item.ProductName = product.Name;
         }
 
         await cache.SetStringAsync(basket.UserName, JsonSerializer.Serialize(basket));
