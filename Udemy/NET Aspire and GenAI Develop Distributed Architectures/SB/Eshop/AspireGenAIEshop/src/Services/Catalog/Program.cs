@@ -13,6 +13,9 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+app.UseMigration();
+
+
 app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
