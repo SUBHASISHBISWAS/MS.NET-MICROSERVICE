@@ -13,7 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Basket\Basket.csproj" />
       <ProjectReference Include="..\..\Services\Basket\Basket.csproj" />
       <ProjectReference Include="..\..\Services\Catalog\Catalog.csproj" />
     </ItemGroup>
