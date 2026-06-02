@@ -7,11 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.4.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Aspire\ServiceDefaults\ServiceDefaults.csproj" />
+      <ProjectReference Include="..\..\Aspire\ServiceDefaults\ServiceDefaults.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\" />
+      <Folder Include="Models\" />
     </ItemGroup>
 
 </Project>

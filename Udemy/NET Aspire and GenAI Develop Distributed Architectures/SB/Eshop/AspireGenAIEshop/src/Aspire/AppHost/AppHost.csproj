@@ -9,11 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Catalog\Catalog.csproj" />
+      <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.4.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.4.0" />
+      <ProjectReference Include="..\..\Services\Catalog\Catalog.csproj" />
     </ItemGroup>
 
 </Project>
