@@ -11,7 +11,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Aspire\ServiceDefaults\ServiceDefaults.csproj" />
       <ProjectReference Include="..\src\Aspire\ServiceDefaults\ServiceDefaults.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
     </ItemGroup>
 
 </Project>
