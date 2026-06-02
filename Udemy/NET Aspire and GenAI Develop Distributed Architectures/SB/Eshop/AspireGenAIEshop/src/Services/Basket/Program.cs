@@ -2,6 +2,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+builder.AddRedisDistributedCache(connectionName: "cache");
+builder.Services.AddScoped<BasketService>();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
