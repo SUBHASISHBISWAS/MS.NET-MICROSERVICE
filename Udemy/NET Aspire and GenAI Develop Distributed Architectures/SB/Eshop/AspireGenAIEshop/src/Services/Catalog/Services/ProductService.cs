@@ -18,12 +18,13 @@ public class ProductService(ProductDbContext dbContext)
         dbContext.Products.Add(product);
         await dbContext.SaveChangesAsync();
     }
-/*
+
     public async Task UpdateProductAsync(Product updatedProduct, Product inputProduct)
     {
         // if price has changed, raise ProductPriceChanged integration event
         if (updatedProduct.Price != inputProduct.Price)
         {
+            /*
             // Publish product price changed integration event for update basket prices
             var integrationEvent = new ProductPriceChangedIntegrationEvent
             {
@@ -34,7 +35,9 @@ public class ProductService(ProductDbContext dbContext)
                 ImageUrl = inputProduct.ImageUrl
             };
             await bus.Publish(integrationEvent);
+            */
         }
+        
 
         // update product with new values
         updatedProduct.Name = inputProduct.Name;
@@ -45,7 +48,7 @@ public class ProductService(ProductDbContext dbContext)
         dbContext.Products.Update(updatedProduct);
         await dbContext.SaveChangesAsync();
     }
-*/
+
     public async Task DeleteProductAsync(Product deletedProduct)
     {
         dbContext.Products.Remove(deletedProduct);
