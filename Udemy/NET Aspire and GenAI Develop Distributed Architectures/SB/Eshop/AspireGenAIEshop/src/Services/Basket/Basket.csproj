@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Endpoints\" />
       <Folder Include="Models\" />
       <Folder Include="Services\" />
     </ItemGroup>
