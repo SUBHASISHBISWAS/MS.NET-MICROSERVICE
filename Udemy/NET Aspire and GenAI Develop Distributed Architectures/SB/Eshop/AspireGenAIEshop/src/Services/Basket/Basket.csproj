@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <Folder Include="Endpoints\" />
+      <Folder Include="EventHandlers\" />
       <Folder Include="Services\" />
     </ItemGroup>
 

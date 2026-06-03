@@ -5,6 +5,7 @@ builder.AddServiceDefaults();
 
 builder.AddRedisDistributedCache(connectionName: "cache");
 builder.Services.AddScoped<BasketService>();
+builder.Services.AddMassTransitWithAssemblies(Assembly.GetExecutingAssembly());
 builder.Services.AddOpenApi();
 
 builder.Services.AddHttpClient<CatalogApiClient>(client =>

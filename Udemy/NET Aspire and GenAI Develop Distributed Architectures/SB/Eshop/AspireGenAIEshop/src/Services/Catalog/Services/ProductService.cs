@@ -1,7 +1,10 @@
 ﻿
+using MassTransit;
+using ServiceDefaults.Messaging.Events;
+
 namespace Catalog.Services;
 
-public class ProductService(ProductDbContext dbContext)
+public class ProductService(ProductDbContext dbContext, IBus bus)
 {
     public async Task<IEnumerable<Product>> GetProductsAsync()
     {
@@ -24,7 +27,7 @@ public class ProductService(ProductDbContext dbContext)
         // if price has changed, raise ProductPriceChanged integration event
         if (updatedProduct.Price != inputProduct.Price)
         {
-            /*
+            
             // Publish product price changed integration event for update basket prices
             var integrationEvent = new ProductPriceChangedIntegrationEvent
             {
@@ -35,7 +38,7 @@ public class ProductService(ProductDbContext dbContext)
                 ImageUrl = inputProduct.ImageUrl
             };
             await bus.Publish(integrationEvent);
-            */
+            
         }
         
 
