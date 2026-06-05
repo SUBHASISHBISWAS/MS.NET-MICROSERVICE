@@ -21,4 +21,8 @@
       <Folder Include="ApiClients\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="13.4.2" />
+    </ItemGroup>
+
 </Project>
