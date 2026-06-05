@@ -13,6 +13,16 @@ builder.Services.AddHttpClient<CatalogApiClient>(client =>
     client.BaseAddress = new("https+http://catalog");
 });
 
+builder.Services.AddAuthentication()
+    .AddKeycloakJwtBearer(
+        serviceName: "keycloak",
+        realm: "Subhasish",
+        configureOptions: options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.Audience = "account";
+        });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -27,5 +37,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.Run();
