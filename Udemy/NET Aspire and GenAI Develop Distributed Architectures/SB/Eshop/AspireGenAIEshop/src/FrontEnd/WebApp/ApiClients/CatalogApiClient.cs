@@ -5,7 +5,8 @@ namespace WebApp.ApiClients;
 public class CatalogApiClient(HttpClient httpClient)
 {
     public async Task<List<Product>> GetProducts()
-    {        var response = await httpClient.GetFromJsonAsync<List<Product>>($"/products");
+    {
+        var response = await httpClient.GetFromJsonAsync<List<Product>>($"/products");
         return response!;
     }
 

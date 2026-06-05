@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\FrontEnd\WebApp\WebApp.csproj" />
       <ProjectReference Include="..\..\Services\Basket\Basket.csproj" />
       <ProjectReference Include="..\..\Services\Catalog\Catalog.csproj" />
     </ItemGroup>

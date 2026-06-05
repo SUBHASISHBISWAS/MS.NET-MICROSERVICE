@@ -1,7 +1,5 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-
-
 // Backing Services
 var postgres = builder
     .AddPostgres("postgres")
@@ -34,5 +32,14 @@ var catalog=builder.AddProject<Projects.Catalog>("catalog").WithReference(catalo
 var basket=builder.AddProject<Projects.Basket>("basket").WithReference(cache).WithReference(catalog).WithReference(rabbitmq).WithReference(keycloak)
     .WaitFor
     (cache).WaitFor(catalog).WaitFor(rabbitmq).WaitFor(keycloak);;
+
+var webapp = builder
+    .AddProject<Projects.WebApp>("webapp")
+    .WithExternalHttpEndpoints()
+    .WithReference(cache)
+    .WithReference(catalog)    
+    .WithReference(basket)
+    .WaitFor(catalog)
+    .WaitFor(basket);
 
 builder.Build().Run();
