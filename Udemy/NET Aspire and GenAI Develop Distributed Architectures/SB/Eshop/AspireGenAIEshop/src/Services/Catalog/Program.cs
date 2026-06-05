@@ -7,6 +7,7 @@ builder.AddNpgsqlDbContext<ProductDbContext>(connectionName: "catalogdb");
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddMassTransitWithAssemblies(Assembly.GetExecutingAssembly());
 builder.Services.AddOpenApi();
+builder.AddOllamaSharpChatClient("ollama-llama3-2");
 
 var app = builder.Build();
 
