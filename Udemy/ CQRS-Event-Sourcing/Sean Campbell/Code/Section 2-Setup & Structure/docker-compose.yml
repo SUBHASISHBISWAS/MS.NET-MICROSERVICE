@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   zookeeper:
-    image: docker.io/bitnami/zookeeper:3.9
+    image: docker.io/soldevelo/zookeeper:3.9
     container_name: zookeeper
     restart: always
     ports:
@@ -12,7 +12,7 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
-    image: docker.io/bitnami/kafka:3.5
+    image: docker.io/soldevelo/kafka:3.5
     container_name: kafka
     ports:
       - "9092:9092"
